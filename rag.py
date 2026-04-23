@@ -33,11 +33,14 @@ class DanbooruRAG:
         index_dir = Path(index_dir)
         t0 = time.perf_counter()
 
-        # Load embeddings: prefer compressed npz, fall back to npy
-        npz_path = index_dir / "embeddings.npz"
+        # Load embeddings: prefer fp16 npz (smallest), then fp32 npz, then npy
+        npz_f16 = index_dir / "embeddings_fp16.npz"
+        npz_f32 = index_dir / "embeddings.npz"
         npy_path = index_dir / "embeddings.npy"
-        if npz_path.exists():
-            self.embeddings = np.load(npz_path)["embeddings"].astype(np.float32)
+        if npz_f16.exists():
+            self.embeddings = np.load(npz_f16)["embeddings"].astype(np.float32)
+        elif npz_f32.exists():
+            self.embeddings = np.load(npz_f32)["embeddings"].astype(np.float32)
         elif npy_path.exists():
             self.embeddings = np.load(npy_path).astype(np.float32)
         else:

@@ -9,6 +9,7 @@ api = HfApi()
 
 # Upload files
 files = [
+    f"{INDEX_DIR}/embeddings_fp16.npz",
     f"{INDEX_DIR}/embeddings.npz",
     f"{INDEX_DIR}/metadata.parquet",
     f"{INDEX_DIR}/char_copyright.json",
