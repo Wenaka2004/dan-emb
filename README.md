@@ -44,11 +44,32 @@ SILICONFLOW_API_KEY=sk-your-key-here
 - **Qwen3-Embedding-8B** 用于向量化（约 ¥0.28/百万 token）
 - **DeepSeek-V3.2** 用于 LLM 扩写
 
-#### 3. 构建索引
+#### 3. 准备索引
+
+**方案 A：下载预构建索引（推荐）**
+
+直接下载预构建的嵌入索引，跳过耗时的构建步骤：
+
+```bash
+pip install huggingface_hub
+python -c "
+from huggingface_hub import hf_hub_download
+import os
+os.makedirs('embedding_index', exist_ok=True)
+for f in ['embeddings.npy', 'metadata.parquet', 'char_copyright.json']:
+    path = hf_hub_download('Wenaka/Danbooru_Wiki_Embedding_Qwen3_8B', f, local_dir='embedding_index')
+    print(f'Downloaded: {f}')
+"
+```
+
+索引内容：
+- `embeddings.npy` — 137502 × 4096 float32 向量（约 4.2 GB）
+- `metadata.parquet` — 标签元数据与清洗后的 wiki 文本
+- `char_copyright.json` — 角色→版权映射
+
+**方案 B：自行构建索引**
 
 从 [isek-ai/danbooru-wiki-2024](https://huggingface.co/datasets/isek-ai/danbooru-wiki-2024) 下载数据集，将 parquet 文件放在项目根目录，命名为 `danbooru_wiki.parquet`。
-
-构建嵌入索引：
 
 ```bash
 python build_embeddings.py
@@ -59,11 +80,6 @@ python build_embeddings.py
 - 过滤无用章节（成员列表、外链等）
 - 构建角色-版权映射
 - 通过 API 嵌入所有条目（约 ¥4，20 并发约 30 分钟）
-
-完成后 `embedding_index/` 包含：
-- `embeddings.npy` — 137502 × 4096 float32 向量（约 4.2 GB）
-- `metadata.parquet` — 标签元数据与清洗后的 wiki 文本
-- `char_copyright.json` — 角色→版权映射
 
 #### 4. 启动服务
 
@@ -204,9 +220,30 @@ Get your key from [SiliconFlow](https://cloud.siliconflow.cn/). The service uses
 
 #### 3. Prepare the index
 
-Download the Danbooru wiki dataset from [isek-ai/danbooru-wiki-2024](https://huggingface.co/datasets/isek-ai/danbooru-wiki-2024) and place the parquet file in the project root as `danbooru_wiki.parquet`.
+**Option A: Download pre-built index (Recommended)**
 
-Build the embedding index:
+Download the pre-built embedding index directly, skip the time-consuming build step:
+
+```bash
+pip install huggingface_hub
+python -c "
+from huggingface_hub import hf_hub_download
+import os
+os.makedirs('embedding_index', exist_ok=True)
+for f in ['embeddings.npy', 'metadata.parquet', 'char_copyright.json']:
+    path = hf_hub_download('Wenaka/Danbooru_Wiki_Embedding_Qwen3_8B', f, local_dir='embedding_index')
+    print(f'Downloaded: {f}')
+"
+```
+
+The index contains:
+- `embeddings.npy` — 137502 × 4096 float32 vectors (~4.2 GB)
+- `metadata.parquet` — Tag metadata with cleaned wiki text
+- `char_copyright.json` — Character → copyright mappings
+
+**Option B: Build the index yourself**
+
+Download the Danbooru wiki dataset from [isek-ai/danbooru-wiki-2024](https://huggingface.co/datasets/isek-ai/danbooru-wiki-2024) and place the parquet file in the project root as `danbooru_wiki.parquet`.
 
 ```bash
 python build_embeddings.py
@@ -217,11 +254,6 @@ This will:
 - Filter useless sections (member lists, external links, etc.)
 - Build character-copyright mappings
 - Embed all entries via API (~4 CNY, ~30 min with 20 concurrent workers)
-
-When done, `embedding_index/` will contain:
-- `embeddings.npy` — 137502 × 4096 float32 vectors (~4.2 GB)
-- `metadata.parquet` — Tag metadata with cleaned wiki text
-- `char_copyright.json` — Character → copyright mappings
 
 #### 4. Launch the server
 
