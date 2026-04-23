@@ -33,7 +33,15 @@ class DanbooruRAG:
         index_dir = Path(index_dir)
         t0 = time.perf_counter()
 
-        self.embeddings = np.load(index_dir / "embeddings.npy").astype(np.float32)
+        # Load embeddings: prefer compressed npz, fall back to npy
+        npz_path = index_dir / "embeddings.npz"
+        npy_path = index_dir / "embeddings.npy"
+        if npz_path.exists():
+            self.embeddings = np.load(npz_path)["embeddings"].astype(np.float32)
+        elif npy_path.exists():
+            self.embeddings = np.load(npy_path).astype(np.float32)
+        else:
+            raise FileNotFoundError(f"No embeddings file found in {index_dir}")
         norms = np.linalg.norm(self.embeddings, axis=1, keepdims=True)
         norms[norms == 0] = 1
         self.embeddings /= norms

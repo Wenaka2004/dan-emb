@@ -56,14 +56,14 @@ python -c "
 from huggingface_hub import hf_hub_download
 import os
 os.makedirs('embedding_index', exist_ok=True)
-for f in ['embeddings.npy', 'metadata.parquet', 'char_copyright.json']:
+for f in ['embeddings.npz', 'metadata.parquet', 'char_copyright.json']:
     path = hf_hub_download('Wenaka/Danbooru_Wiki_Embedding_Qwen3_8B', f, local_dir='embedding_index')
     print(f'Downloaded: {f}')
 "
 ```
 
 索引内容：
-- `embeddings.npy` — 137502 × 4096 float32 向量（约 4.2 GB）
+- `embeddings.npz` — 137502 × 4096 float32 压缩向量（约 1.3 GB）
 - `metadata.parquet` — 标签元数据与清洗后的 wiki 文本
 - `char_copyright.json` — 角色→版权映射
 
@@ -156,7 +156,7 @@ curl -X POST http://localhost:8000/expand \
 ├── build_char_copyright.py  # 构建角色-版权映射
 ├── .env.example             # 环境变量模板
 ├── embedding_index/         # 生成的索引（不含在 git 中）
-│   ├── embeddings.npy
+│   ├── embeddings.npz
 │   ├── metadata.parquet
 │   └── char_copyright.json
 └── danbooru_wiki.parquet    # 源数据集（不含在 git 中）
@@ -230,14 +230,14 @@ python -c "
 from huggingface_hub import hf_hub_download
 import os
 os.makedirs('embedding_index', exist_ok=True)
-for f in ['embeddings.npy', 'metadata.parquet', 'char_copyright.json']:
+for f in ['embeddings.npz', 'metadata.parquet', 'char_copyright.json']:
     path = hf_hub_download('Wenaka/Danbooru_Wiki_Embedding_Qwen3_8B', f, local_dir='embedding_index')
     print(f'Downloaded: {f}')
 "
 ```
 
 The index contains:
-- `embeddings.npy` — 137502 × 4096 float32 vectors (~4.2 GB)
+- `embeddings.npz` — 137502 × 4096 float32 compressed vectors (~1.3 GB)
 - `metadata.parquet` — Tag metadata with cleaned wiki text
 - `char_copyright.json` — Character → copyright mappings
 
@@ -330,7 +330,7 @@ All settings can be configured via environment variables or `.env` file:
 ├── build_char_copyright.py  # Build character-copyright mapping
 ├── .env.example             # Environment variable template
 ├── embedding_index/         # Generated index (not in git)
-│   ├── embeddings.npy
+│   ├── embeddings.npz
 │   ├── metadata.parquet
 │   └── char_copyright.json
 └── danbooru_wiki.parquet    # Source dataset (not in git)

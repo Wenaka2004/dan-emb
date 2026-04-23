@@ -9,7 +9,7 @@ api = HfApi()
 
 # Upload files
 files = [
-    f"{INDEX_DIR}/embeddings.npy",
+    f"{INDEX_DIR}/embeddings.npz",
     f"{INDEX_DIR}/metadata.parquet",
     f"{INDEX_DIR}/char_copyright.json",
 ]
