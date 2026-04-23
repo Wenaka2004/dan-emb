@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Data (too large for git)
+embedding_index/
+danbooru_wiki.parquet
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Claude
+.claude/
+MEMORY.md
